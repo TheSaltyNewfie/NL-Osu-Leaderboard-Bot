@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 from ossapi import Ossapi
 import json
+import db.sql_interaction as osudb
 
 api = Ossapi(os.environ.get("CLIENT_ID"), os.environ.get("CLIENT_SECRET"))
 intents = discord.Intents.default()
@@ -27,11 +28,15 @@ async def usertest(ctx):
 
 @bot.slash_command()
 async def adduser(ctx, id: str, from_nl: bool):
-    #Gotta add MySQL stuff here, will do tomorrow
+    username = api.user(id).username
+    country = api.user(id).country
+    
+    osudb.add_players(username, id, country, from_nl)
 
     embed = discord.Embed(title="Adding User", description="Adds a user to Osu!Newfoundland Database")
-    embed.add_field(name="Name", value=api.user(id).username, inline=True)
+    embed.add_field(name="Name", value=username, inline=True)
     embed.add_field(name="From NL?", value=from_nl, inline=True)
+    embed.add_field(name="Country", value=country, inline=True)
     await ctx.send(embed=embed)
 
 bot.run(os.environ.get("TOKEN"))
