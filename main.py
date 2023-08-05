@@ -29,7 +29,7 @@ async def usertest(ctx):
 @bot.slash_command()
 async def adduser(ctx, id: str, from_nl: bool):
     username = api.user(id).username
-    country = api.user(id).country
+    country = api.user(id).country.name
     
     osudb.add_players(username, id, country, from_nl)
 
@@ -37,6 +37,6 @@ async def adduser(ctx, id: str, from_nl: bool):
     embed.add_field(name="Name", value=username, inline=True)
     embed.add_field(name="From NL?", value=from_nl, inline=True)
     embed.add_field(name="Country", value=country, inline=True)
-    await ctx.send(embed=embed)
+    await ctx.respond(embed=embed)
 
 bot.run(os.environ.get("TOKEN"))
