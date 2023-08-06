@@ -54,6 +54,4 @@ async def listusers(ctx, gamemode:str):
     await ctx.respond(embed=embed)
 
 
-# embed = discord.Embed(title=f"NL {gamemode.lower} Players", description="NL players within the db")
-
 bot.run(os.environ.get("TOKEN"))
