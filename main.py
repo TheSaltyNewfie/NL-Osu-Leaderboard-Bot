@@ -39,4 +39,11 @@ async def adduser(ctx, id: str, from_nl: bool, gamemode: str):
     embed.add_field(name="Country", value=country, inline=True)
     await ctx.respond(embed=embed)
 
+@bot.slash_command()
+async def listusers(ctx, gamemode:str):
+    list_db = osudb.get_players(game_mode=gamemode)
+    for row in list_db:
+        await ctx.send(row)
+    await ctx.respond("List given!")
+
 bot.run(os.environ.get("TOKEN"))
