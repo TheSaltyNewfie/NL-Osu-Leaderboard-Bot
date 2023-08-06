@@ -42,16 +42,16 @@ async def adduser(ctx, id: str, from_nl: bool, gamemode: str):
 @bot.slash_command()
 async def listusers(ctx, gamemode:str):
     list_db = osudb.get_players(game_mode=gamemode)
-    cleaned = []
+    
+    embed = discord.Embed(title=f"NL {gamemode.upper()} Players", description="NL players within the db")
+
+    index = 1
+
     for row in list_db:
-        pass
-        #cleaned_row = row.replace("(", "").replace(")", "").replace("'", "").split(",")
-        #cleaned.append(cleaned_row)
-    #for item in cleaned:
-    await ctx.send(list_db)
-    #await ctx.send(cleaned)
-        #embed.add_field(name="")
-    await ctx.respond("List given!")
+        embed.add_field(name=f"{index}. {row[0]}", value=f"#{api.user(row[1]).rank_history.data[-1]:,}", inline=False)
+        index = index+1
+
+    await ctx.respond(embed=embed)
 
 
 # embed = discord.Embed(title=f"NL {gamemode.lower} Players", description="NL players within the db")
