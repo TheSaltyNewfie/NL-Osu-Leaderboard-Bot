@@ -7,7 +7,7 @@ db_user = os.environ.get("MYSQL_USER")
 db_password = os.environ.get("MYSQL_PASS")
 db_name = os.environ.get("MYSQL_DB_NAME")
 
-def add_players(username, osu_id, country, is_nl):
+def add_players(username, osu_id, country, is_nl, game_mode):
     connection = mysql.connector.connect(
         host=db_host,
         port=db_port,
@@ -19,11 +19,11 @@ def add_players(username, osu_id, country, is_nl):
         cursor = connection.cursor()
 
         insert_query =  """
-                        INSERT INTO osu_players (username, osu_id, country, is_nl)
-                        VALUES (%s, %s, %s, %s)
+                        INSERT INTO osu_players (username, osu_id, country, is_nl, game_mode)
+                        VALUES (%s, %s, %s, %s, %s)
                         """
 
-        player_data = (username, osu_id, country, is_nl)
+        player_data = (username, osu_id, country, is_nl, game_mode)
 
         cursor.execute(insert_query, player_data)
 

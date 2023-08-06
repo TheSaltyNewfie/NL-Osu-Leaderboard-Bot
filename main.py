@@ -27,11 +27,11 @@ async def usertest(ctx):
     await ctx.respond(api.user(4916057))
 
 @bot.slash_command()
-async def adduser(ctx, id: str, from_nl: bool):
+async def adduser(ctx, id: str, from_nl: bool, gamemode: str):
     username = api.user(id).username
     country = api.user(id).country.name
     
-    osudb.add_players(username, id, country, from_nl)
+    osudb.add_players(username, id, country, from_nl, gamemode)
 
     embed = discord.Embed(title="Adding User", description="Adds a user to Osu!Newfoundland Database")
     embed.add_field(name="Name", value=username, inline=True)
