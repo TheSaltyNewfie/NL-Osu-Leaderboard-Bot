@@ -51,7 +51,7 @@ def get_players(game_mode):
         cursor = connection.cursor()
 
         query = """
-                SELECT * FROM osu_players WHERE game_mode LIKE %s;
+                SELECT username, osu_id FROM osu_players WHERE game_mode LIKE %s;
                 """
         
         cursor.execute(query, (f"%{game_mode}%",))
