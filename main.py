@@ -69,53 +69,25 @@ def get_rank(id):
         return None
 
 @bot.slash_command()
-async def leaderboard(ctx, nl_only:bool, gamemode:str):
-    embedd=discord.Embed(title="You will have to wait", description="Not because I don't like ya, but because discord hates me. Leaderboard should appear soon", color=0x00ff00)
-    await ctx.respond(embed=embedd)
+async def leaderboard(ctx, gamemode:str):
+    #embedd=discord.Embed(title="You will have to wait", description="Not because I don't like ya, but because discord hates me. Leaderboard should appear soon", color=0x00ff00)
+    #await ctx.respond(embed=embedd)
 
-    if nl_only == True:
-        players = osudb.get_players_nl(gamemode)
-        leaderboard_data = {}
-
-        for player_name, player_id in players:
-            rank = get_rank(player_id)
-            if rank is not None:
-                leaderboard_data[player_name] = rank
-        
-        sorted_leaderboard = sorted(leaderboard_data.items(), key=lambda x: x[1])
-
-        limit_list = sorted_leaderboard[:8]
-
-        embed=discord.Embed(title="Leaderboard", description="Here are the top Newfies!", color=0x00ff00)
-        embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/tAiyncgkMCfcsLwR7GHYL18_mm7R5F8EUMkb4VOKVK0/https/cdn.discordapp.com/icons/1109560747211620433/e77a061f86b4da5b876f705d9ff6e7ce.webp")
-
-        for idx, (player_name, rank) in enumerate(limit_list, start=1):
-            embed.add_field(name=f"{idx}. {player_name}", value=f"#{rank:,}", inline=False)
-
-        embed.set_footer(text="Only showing top 8 because of discord problems")
-        await ctx.respond(embed=embed)
-
-    if nl_only == False:
-        players = osudb.get_players(gamemode)
-        leaderboard_data = {}
-
-        for player_name, player_id in players:
-            rank = get_rank(player_id)
-            if rank is not None:
-                leaderboard_data[player_name] = rank
-        
-        sorted_leaderboard = sorted(leaderboard_data.items(), key=lambda x: x[1])
-
-        limit_list = sorted_leaderboard[:8]
-
-        embed=discord.Embed(title="Leaderboard", description="Here are the top Newfies!", color=0x00ff00)
-        embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/tAiyncgkMCfcsLwR7GHYL18_mm7R5F8EUMkb4VOKVK0/https/cdn.discordapp.com/icons/1109560747211620433/e77a061f86b4da5b876f705d9ff6e7ce.webp")
-        
-        for idx, (player_name, rank) in enumerate(limit_list, start=1):
-            embed.add_field(name=f"{idx}. {player_name}", value=f"#{rank:,}", inline=False)
-
-        embed.set_footer(text="Only showing top 5 because of discord problems")
-        await ctx.respond(embed=embed)
+    players = osudb.get_players_nl(gamemode)
+    leaderboard_data = {}
+    for player_name, player_id in players:
+        rank = get_rank(player_id)
+        if rank is not None:
+            leaderboard_data[player_name] = rank
+    
+    sorted_leaderboard = sorted(leaderboard_data.items(), key=lambda x: x[1])
+    limit_list = sorted_leaderboard[:8]
+    embed=discord.Embed(title="Leaderboard", description="Here are the top Newfies!", color=0x00ff00)
+    embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/tAiyncgkMCfcsLwR7GHYL18_mm7R5F8EUMkb4VOKVK0/https/cdn.discordapp.com/icons/1109560747211620433/e77a061f86b4da5b876f705d9ff6e7ce.webp")
+    for idx, (player_name, rank) in enumerate(limit_list, start=1):
+        embed.add_field(name=f"{idx}. {player_name}", value=f"#{rank:,}", inline=False)
+    embed.set_footer(text="Only showing top 8 because of discord problems")
+    await ctx.respond(embed=embed)
 
 
 bot.run(os.environ.get("TOKEN"))
