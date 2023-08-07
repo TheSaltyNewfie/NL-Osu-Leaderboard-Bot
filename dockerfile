@@ -15,7 +15,6 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY /db/ ./db/
-COPY osunldatabase_temp.json .
 
 COPY main.py .
 CMD ["python", "main.py"]

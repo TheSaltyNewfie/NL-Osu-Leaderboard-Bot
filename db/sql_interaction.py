@@ -65,3 +65,31 @@ def get_players(game_mode):
         if connection.is_connected():
             cursor.close()
             connection.close()
+
+def get_players_nl(game_mode):
+    connection = mysql.connector.connect(
+        host=db_host,
+        port=db_port,
+        user=db_user,
+        password=db_password,
+        database=db_name
+        )
+    
+    try:
+        cursor = connection.cursor()
+
+        query = """
+                SELECT username, osu_id FROM osu_players WHERE game_mode LIKE %s AND is_nl LIKE 1;
+                """
+        
+        cursor.execute(query, (f"%{game_mode}%",))
+
+        rows = cursor.fetchall()
+
+        return rows
+    except mysql.connector.Error as error:
+        return f"Error while executing: {error}"
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
