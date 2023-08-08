@@ -4,6 +4,7 @@ import os
 from ossapi import Ossapi
 import json
 import db.sql_interaction as osudb
+import redis
 
 api = Ossapi(os.environ.get("CLIENT_ID"), os.environ.get("CLIENT_SECRET"))
 intents = discord.Intents.default()
@@ -53,6 +54,7 @@ async def listusers(ctx, gamemode:str):
 
     for row in list_db:
         embed.add_field(name=f"{index}. {row[0]}", value=f"#{api.user(row[1]).rank_history.data[-1]:,}", inline=False)
+        await ctx.send(row[0])
         index = index+1
 
     await ctx.respond(embed=embed)
