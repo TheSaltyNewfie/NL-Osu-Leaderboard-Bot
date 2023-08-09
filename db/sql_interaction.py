@@ -38,7 +38,7 @@ def add_players(username, osu_id, country, is_nl, game_mode):
             cursor.close()
             connection.close()
 
-def get_players(game_mode):
+def get_players(game_mode:str, limit:int):
     connection = mysql.connector.connect(
         host=db_host,
         port=db_port,
@@ -51,10 +51,10 @@ def get_players(game_mode):
         cursor = connection.cursor()
 
         query = """
-                SELECT username, osu_id FROM osu_players WHERE game_mode LIKE %s;
+                SELECT username, osu_id FROM osu_players WHERE game_mode LIKE %s LIMIT %s;
                 """
         
-        cursor.execute(query, (f"%{game_mode}%",))
+        cursor.execute(query, (f"%{game_mode}%", limit))
 
         rows = cursor.fetchall()
 

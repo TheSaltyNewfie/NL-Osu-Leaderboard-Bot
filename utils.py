@@ -33,6 +33,10 @@ def get_rank(id):
                     r.hset(key, 'timestamp', time.time())
                     return rank
                 else:
+                    print("Setting keys for inactive/restricted.")
+                    r.hset(key, 'rank', 999_999_999)
+                    r.hset(key, 'pp_amnt', 0)
+                    r.hset(key, 'timestamp', time.time())
                     return None
 
             except AttributeError as error:
@@ -51,6 +55,10 @@ def get_rank(id):
             r.hset(key, 'timestamp', time.time())
             return rank
         else:
+            print("Setting keys for inactive/restricted.")
+            r.hset(key, 'rank', 999_999_999)
+            r.hset(key, 'pp_amnt', 0)
+            r.hset(key, 'timestamp', time.time())
             return None
     except AttributeError as error:
         return None

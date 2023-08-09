@@ -48,7 +48,7 @@ async def adduser(ctx, id: str, from_nl: bool, gamemode: str):
 
 @bot.slash_command()
 async def listusers(ctx, gamemode:str):
-    list_db = osudb.get_players(game_mode=gamemode)
+    list_db = osudb.get_players(game_mode=gamemode, limit=8)
     
     embed = discord.Embed(title=f"NL {gamemode.upper()} Players", description="NL players within the db")
 
@@ -56,16 +56,40 @@ async def listusers(ctx, gamemode:str):
 
     for row in list_db:
         embed.add_field(name=f"{index}. {row[0]}", value=f"#{api.user(row[1]).rank_history.data[-1]:,}", inline=False)
-        await ctx.send(row[0])
+        #await ctx.send(row[0])
         index = index+1
 
     await ctx.respond(embed=embed)
+
+@bot.slash_command()
+async def listusers_temp(ctx, gamemode: str):
+    # Send a temporary message saying "Gathering users"
+    temp_message = await ctx.respond("Gathering users")
+
+    list_db = osudb.get_players(game_mode=gamemode, limit=8)
+
+    embed = discord.Embed(title=f"NL {gamemode.upper()} Players", description="NL players within the db")
+    index = 1
+
+    for row in list_db:
+        embed.add_field(name=f"{index}. {row[0]}", value=f"#{utils.get_rank(row[1]):,}", inline=False)
+        index = index + 1
+
+    # Delete the temporary message
+    await temp_message.edit_original_response(f"{embed}")  # Temp fix for something.
+
+    # Respond with the new embed
+    #await ctx.respond(embed=embed)
 
 
 @bot.slash_command()
 async def leaderboard(ctx, gamemode:str):
     embedd=discord.Embed(title="Leaderboard will soon show", description="If the server is caching new results, it will take a minute or so to show", color=0x00ff00)
-    await ctx.respond(embed=embedd)
+    wait_message = await ctx.respond(embed=embedd)
+    testing_feature = {'std':'Standard',
+                       'mania':'Mania',
+                       'ctb':'Catch The Beat',
+                       'taiko':'Taiko'}
 
     players = osudb.get_players_nl(gamemode)
     leaderboard_data = {}
@@ -76,11 +100,14 @@ async def leaderboard(ctx, gamemode:str):
     
     sorted_leaderboard = sorted(leaderboard_data.items(), key=lambda x: x[1])
     limit_list = sorted_leaderboard[:8]
-    embed=discord.Embed(title="Leaderboard", description="Here are the top Newfies!", color=0x00ff00)
+    embed=discord.Embed(title="Leaderboard", description=f"Here are the top Newfies for {testing_feature[gamemode.lower()]}!", color=0x00ff00)
     embed.set_thumbnail(url="https://images-ext-2.discordapp.net/external/tAiyncgkMCfcsLwR7GHYL18_mm7R5F8EUMkb4VOKVK0/https/cdn.discordapp.com/icons/1109560747211620433/e77a061f86b4da5b876f705d9ff6e7ce.webp")
     for idx, (player_name, rank) in enumerate(limit_list, start=1):
         embed.add_field(name=f"{idx}. {player_name}", value=f"#{rank:,}", inline=False)
     embed.set_footer(text="Only showing top 8 because of discord problems")
+
+    await wait_message.delete_original_response()
+
     await ctx.respond(embed=embed)
 
 
