@@ -1,10 +1,12 @@
 import discord
 from discord.ext import commands
+from discord import SlashCommand
 import os
 from ossapi import Ossapi
 import json
 import db.sql_interaction as osudb
 import redis
+import utils
 
 api = Ossapi(os.environ.get("CLIENT_ID"), os.environ.get("CLIENT_SECRET"))
 intents = discord.Intents.default()
@@ -59,26 +61,16 @@ async def listusers(ctx, gamemode:str):
 
     await ctx.respond(embed=embed)
 
-def get_rank(id):
-    try:
-        rank = api.user(id).rank_history.data[-1]
-        pp_amnt = api.user(id).statistics.pp
-        if pp_amnt == 0:
-            return None
-        else:
-            return rank
-    except AttributeError as error:
-        return None
 
 @bot.slash_command()
 async def leaderboard(ctx, gamemode:str):
-    #embedd=discord.Embed(title="You will have to wait", description="Not because I don't like ya, but because discord hates me. Leaderboard should appear soon", color=0x00ff00)
-    #await ctx.respond(embed=embedd)
+    embedd=discord.Embed(title="Leaderboard will soon show", description="If the server is caching new results, it will take a minute or so to show", color=0x00ff00)
+    await ctx.respond(embed=embedd)
 
     players = osudb.get_players_nl(gamemode)
     leaderboard_data = {}
     for player_name, player_id in players:
-        rank = get_rank(player_id)
+        rank = utils.get_rank(player_id)
         if rank is not None:
             leaderboard_data[player_name] = rank
     
